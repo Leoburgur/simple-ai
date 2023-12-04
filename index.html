@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>
+   Simple AI
+  </title>
+<!-- Bootstrap CSS -->
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"/>
+<!-- Custom CSS -->
+<meta content="noindex, nofollow" name="robots"/>
+<meta content="noindex, nofollow" name="robots"/></head>
+<body>
+<!-- Chat Container -->
+<div class="container mt-5">
+<div class="row justify-content-center">
+<div class="col-md-6">
+<div id="chat-container">
+</div>
+<div id="user-input">
+<input class="form-control" id="message-input" placeholder="Type your message..." type="text"/>
+<button class="btn btn-primary mt-2" id="send-button" type="button">
+       Send
+      </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Bootstrap & jQuery JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+</script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js">
+</script>
+<!-- AI Chat JS -->
+</body>
+</html>
+
+
+<style>
+    body {
+    font-family: Arial, sans-serif;
+}
+
+#chat-container {
+    height: 400px;
+    overflow-y: scroll;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+#chat-container p {
+    margin: 5px 0;
+}
+
+#user-input {
+    margin-top: 10px;
+}
+</style>
+
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.1/js/bootstrap.min.js"></script>
+<script type = "module">
+  const textval = $("#message-input").val();
+
+  function ai(response) {
+    $.ajax({
+      url: 'https://generativelanguage.googleapis.com/v1beta3/models/chat-bison-001:generateMessage?key='+'AIzaSyCKtydVd__KSOmxJX4wT-Utb9Y6MHFPpjg',
+      crossDomain: true,
+      method: 'post',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        'prompt': {
+          'context': '',
+          'examples': [],
+          'messages': [
+            {
+              'content': response
+            }
+          ]
+        },
+        'temperature': 0.8,
+        'top_k': 40,
+        'top_p': 0.95,
+        'candidate_count': 1
+      })
+    }).done(function(response) {
+      respnce(response);
+    });
+  }
+
+  function respnce(response) {
+    const chatContainer = $("#chat-container");
+    chatContainer.append(`<p><strong>AI:</strong> ${response}</p>`);
+    chatContainer.scrollTop(chatContainer[0].scrollHeight);
+  }
+
+  function sendUserMessage() {
+    const messageInput = $("#message-input");
+    const userMessage = messageInput.val();
+    const chatContainer = $("#chat-container");
+    chatContainer.append(`<p><strong>You:</strong> ${JSON.stringify(userMessage)}</p>`);
+
+    chatContainer.scrollTop(chatContainer[0].scrollHeight);
+    messageInput.val("");
+  }
+
+  $("#send-button").click(function() {
+    sendUserMessage();
+  });
+
+  $("#message-input").keypress(function(e) {
+    if (e.which === 13) {
+      sendUserMessage();
+    }
+  });
+
+  // Fix: Show the response from the API AJAX in the window
+</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</html>
+    
