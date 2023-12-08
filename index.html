@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Chat</title>
+    <style>
+        #chatbox {
+            width: 300px;
+            height: 400px;
+            border: 1px solid black;
+            overflow: auto;
+        }
+        #userInput {
+            width: 300px;
+        }
+      
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <div id="chatbox"></div>
+    <input id="userInput" type="text" placeholder="Type your message here...">
+    <button id="sendButton">Send</button>
+
+    <script>
+        $("#sendButton").click(function() {
+            var userInput = $("#userInput").val();
+            $("#chatbox").append("<p>You: " + userInput + "</p>");
+            $("#userInput").val("");
+
+            $.ajax({
+                url: "https://generativelanguage.googleapis.com/v1beta3/models/chat-bison-001:generateMessage?key=AIzaSyCKtydVd__KSOmxJX4wT-Utb9Y6MHFPpjg", // replace with your server endpoint
+                type: "POST",
+                data: JSON.stringify({
+                    model: "models/chat-bison-001",
+                    temperature: 0.8,
+                    candidateCount: 1,
+                    topK: 40,
+                    topP: 0.95,
+                    prompt: {
+                        context: "",
+                        examples: [],
+                        messages: [{ "content": userInput }],
+                    },
+                }),
+                contentType: "text; charset=utf-8",
+                dataType: "JSON",
+                success: function(data) {
+$("#chatbox").append("<p>AI: " + JSON.stringify(data, null, 4) + "</p>");
+
+                    $("#chatbox").scrollTop($("#chatbox")[0].scrollHeight);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
